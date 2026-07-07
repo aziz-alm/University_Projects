@@ -8,7 +8,7 @@ Part C of the assignment was delivered as a timed, auto-graded SQL test on Ed ag
 
 PVFC is a furniture-manufacturer schema: customers and their orders, the products on those orders, the raw materials each product uses, the vendors that supply those materials, and the employees (and their skills) who work across the operation. Table names carry a `_T` suffix (e.g. `Customer_T`).
 
-![PVFC entity–relationship diagram](../SQL_Imgs/Pasted%20image%2020260703060835.png)
+![PVFC entity–relationship diagram](Pasted%20image%2020260703060835.png)
 
 Tables used in these questions:
 - `RawMaterial_T`, `Supplies_T`, `Vendor_T` - materials, per-unit supply prices, and suppliers
@@ -35,7 +35,7 @@ WHERE materialId IN (
 
 **Approach:** an uncorrelated subquery finds the material IDs with a qualifying supply price; the outer query returns the requested columns for those materials.
 
-![Q1 test cases passed](../SQL_Imgs/Pasted%20image%2020260703061103.png)
+![Q1 test cases passed](Pasted%20image%2020260703061103.png)
 
 ---
 
@@ -62,7 +62,7 @@ ORDER BY e.employeeName, sk.skillDescription;
 
 **Approach:** the three-table join resolves each employee's skill descriptions, while the `HAVING COUNT(SkillID) > 1` subquery restricts the result to employees holding more than one skill.
 
-![Q2 test cases passed](../SQL_Imgs/Pasted%20image%2020260703061314.png)
+![Q2 test cases passed](Pasted%20image%2020260703061314.png)
 
 ---
 
@@ -88,7 +88,7 @@ ORDER BY e.employeeName, sk.skillDescription;
 
 **Approach:** the skill count is computed once in a derived table (`sk1`) and joined back to the main query, so it both filters the employees *and* exposes the count as a selectable column.
 
-![Q3 test cases passed](../SQL_Imgs/Pasted%20image%2020260703061541.png)
+![Q3 test cases passed](Pasted%20image%2020260703061541.png)
 
 ---
 
@@ -117,4 +117,4 @@ ORDER BY m.MaterialName;
 
 **Approach:** a derived table (`f`) computes the minimum supply price per material; joining `Supplies_T` back on both `MaterialID` **and** the matching minimum price isolates the exact vendor offering that price, then the joins resolve the material and vendor names.
 
-![Q4 test cases passed](../SQL_Imgs/Pasted%20image%2020260703061711.png)
+![Q4 test cases passed](Pasted%20image%2020260703061711.png)
