@@ -1,96 +1,127 @@
+# Practice SQL Exam 2
 
-![[Pasted image 20260703080258.png]]
-# Q1
-List all pizzas, giving pizza name, price and country of origin where the country of origin has NOT been recorded (i.e. is missing).
+Second set of practice SQL questions - more work with NULLs, correlated subqueries, JOINs with type filtering, and GROUP BY with HAVING.
 
-# My answering 
+## Database Schema
 
-```SQL
-select pizza, price, country from menu where country is  null
-```
-![[Pasted image 20260703080407.png]]
+![Database Schema](../SQL_Imgs/Pasted%20image%2020260703080258.png)
 
+Same pizza database: **menu**, **recipe**, **items**, and **menu2014**.
 
-# Q2
-Give the most expensive pizza price from each country of origin.
+---
 
-Sort your results by country in ascending order.
+## Q1 - IS NULL
 
-# My answer
+> List all pizzas, giving pizza name, price and country of origin where the country of origin has NOT been recorded (i.e. is missing).
 
-```SQL
-select country, price max from menu m  where price=(select max(price) 
-from menu where country=m.country) order by country asc
+```sql
+SELECT pizza, price, country
+FROM menu
+WHERE country IS NULL
 ```
 
-![[Pasted image 20260703080513.png]]
+Can't use `= NULL` here - NULL isn't a value, so you need `IS NULL`.
 
-# Q3
-Give the average price of pizzas from each country of origin, only list countries with 'i' in the country's name.
+![Q1 Result](../SQL_Imgs/Pasted%20image%2020260703080407.png)
 
-Sort your results based on country in ascending order.
+---
 
-# My answer
+## Q2 - Correlated Subquery for Max per Group
 
-```SQL
-select country ,avg(price) from menu   
-where country like '%i%' group by country order by country
+> Give the most expensive pizza price from each country of origin. Sort your results by country in ascending order.
+
+```sql
+SELECT country, price max
+FROM menu m
+WHERE price = (SELECT MAX(price) FROM menu WHERE country = m.country)
+ORDER BY country ASC
 ```
 
+The correlated subquery finds the max price for the same country as the outer row. This returns actual rows (not just the aggregate), so you get the country paired with the max price.
 
-![[Pasted image 20260703080736.png]]
+![Q2 Result](../SQL_Imgs/Pasted%20image%2020260703080513.png)
 
+---
 
-# Q4 
-List all 'fish' ingredients used in pizzas, also list the pizza names. Do not use a subquery.
+## Q3 - LIKE + GROUP BY + ORDER BY
 
-# My answer
+> Give the average price of pizzas from each country of origin, only list countries with 'i' in the country's name. Sort your results based on country in ascending order.
 
-```SQL
-select r.ingredient,r.pizza from recipe r 
-join items i on r.ingredient=i.ingredient where i.Type='fish'
-```
-![[Pasted image 20260703080844.png]]
-
-
-
-# Q5 
-List all ingredients for the Mexican pizza (i.e. country = 'mexico'). You must use a subquery.
-
-# My answer
-
-```SQL
-select distinct ingredient from recipe 
-where pizza in (select pizza from menu where country= 'mexico')
+```sql
+SELECT country, AVG(price)
+FROM menu
+WHERE country LIKE '%i%'
+GROUP BY country
+ORDER BY country
 ```
 
-![[Pasted image 20260703080948.png]]
+The WHERE with LIKE filters countries before grouping - only countries containing 'i' make it through.
 
+![Q3 Result](../SQL_Imgs/Pasted%20image%2020260703080736.png)
 
-# Q6
-List all pizzas that cost more than 'stagiony' pizza, also give their prices. Sort the results based on prices in descending order.
+---
 
-# My answer 
+## Q4 - JOIN with Type Filter (No Subquery)
 
-```SQL
-select pizza,price from menu where price>
-(select price from menu where pizza='stagiony')
+> List all 'fish' ingredients used in pizzas, also list the pizza names. Do not use a subquery.
+
+```sql
+SELECT r.ingredient, r.pizza
+FROM recipe r
+JOIN items i ON r.ingredient = i.ingredient
+WHERE i.type = 'fish'
 ```
 
-![[Pasted image 20260703081117.png]]
+Join recipe to items to get the type, then filter for fish.
 
+![Q4 Result](../SQL_Imgs/Pasted%20image%2020260703080844.png)
 
-# Q7 
-List ingredients used in more than one pizza.
+---
 
-Sort your results in ascending order.
+## Q5 - Subquery with IN
 
+> List all ingredients for the Mexican pizza (i.e. country = 'mexico'). You must use a subquery.
 
-# My answer
-
-```SQL
-select ingredient from recipe group 
-by ingredient having count(ingredient)>1 order by ingredient asc
+```sql
+SELECT DISTINCT ingredient
+FROM recipe
+WHERE pizza IN (SELECT pizza FROM menu WHERE country = 'mexico')
 ```
-![[Pasted image 20260703081212.png]]
 
+The subquery grabs all Mexican pizzas from menu, then the outer query pulls their ingredients from recipe. DISTINCT avoids duplicates if any ingredient appears in multiple Mexican pizzas.
+
+![Q5 Result](../SQL_Imgs/Pasted%20image%2020260703080948.png)
+
+---
+
+## Q6 - Scalar Subquery Comparison
+
+> List all pizzas that cost more than 'stagiony' pizza, also give their prices. Sort the results based on prices in descending order.
+
+```sql
+SELECT pizza, price
+FROM menu
+WHERE price > (SELECT price FROM menu WHERE pizza = 'stagiony')
+```
+
+The subquery returns stagiony's price as a single value, and we compare everything else against it.
+
+![Q6 Result](../SQL_Imgs/Pasted%20image%2020260703081117.png)
+
+---
+
+## Q7 - GROUP BY + HAVING for Shared Ingredients
+
+> List ingredients used in more than one pizza. Sort your results in ascending order.
+
+```sql
+SELECT ingredient
+FROM recipe
+GROUP BY ingredient
+HAVING COUNT(ingredient) > 1
+ORDER BY ingredient ASC
+```
+
+Group by ingredient then use HAVING to keep only those appearing in more than one pizza.
+
+![Q7 Result](../SQL_Imgs/Pasted%20image%2020260703081212.png)
