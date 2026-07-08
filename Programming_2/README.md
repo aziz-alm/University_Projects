@@ -41,8 +41,7 @@ Main_Project/
 └── TkUtils.py                  # shared Tkinter styling helpers
 ```
 
-<!-- SCREENSHOT / VIDEO: add a screenshot of the game window here, and link the gameplay video (e.g. ./demo/gameplay.mp4) -->
-
+[![Watch the video](https://img.youtube.com/vi/3s7VEz9IOcA/maxresdefault.jpg)](https://youtu.be/3s7VEz9IOcA)
 ---
 
 ## The labs
