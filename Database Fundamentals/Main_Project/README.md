@@ -8,7 +8,7 @@ A relational database for the Apple App Store, taken from case study to a workin
 | -------------------------- | -------------------------------------------------------------------------- |
 | [A](Part_A_case_study.pdf) | Case study - data requirements and business rules                          |
 | [B](./part_B_erd.pdf)      | ERD - the conceptual model (entities, keys, relationships)                 |
-| [C](Part_C_sql_quiz.md.md)    | Normalisation - delivered as an SQL quiz on Ed                             |
-| [D](Part_D_sql.sql)      | The full database built in PostgreSQL (tables, constraints, data, queries) |
+| [C](Part_C_sql_quiz.md)    | Normalisation - delivered as an SQL quiz on Ed                             |
+| [D](Part_D_sql.sql)        | The full database built in PostgreSQL (tables, constraints, data, queries) |
 
 **Tech:** PostgreSQL · SQL · ERD design
